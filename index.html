@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuickBite — 20 Min Delivery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --saffron: #FF6B1A;
+    --saffron-dark: #E0560D;
+    --saffron-light: #FFF0E8;
+    --ink: #1A120B;
+    --ink-mid: #4A3728;
+    --ink-soft: #8A7060;
+    --cream: #FDF7F2;
+    --white: #FFFFFF;
+    --border: rgba(26,18,11,0.10);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); overflow-x: hidden; }
+  h1, h2, h3, .brand { font-family: 'Syne', sans-serif; }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 5vw; height: 64px;
+  }
+  .brand { font-size: 22px; font-weight: 800; color: var(--saffron); letter-spacing: -0.5px; }
+  .brand span { color: var(--ink); }
+  .nav-badge {
+    background: var(--saffron); color: #fff;
+    font-size: 12px; font-weight: 600; font-family: 'DM Sans', sans-serif;
+    padding: 4px 14px; border-radius: 20px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .pulse { width: 8px; height: 8px; background: #4ade80; border-radius: 50%; display: inline-block; animation: pulse 1.4s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.3)} }
+
+  /* HERO */
+  .hero {
+    background: var(--ink);
+    padding: 64px 5vw 56px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,107,26,0.18); color: var(--saffron);
+    font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 { font-size: clamp(36px, 5vw, 58px); font-weight: 800; color: #fff; line-height: 1.08; letter-spacing: -1.5px; margin-bottom: 18px; }
+  .hero h1 em { color: var(--saffron); font-style: normal; }
+  .hero p { color: rgba(255,255,255,0.60); font-size: 17px; line-height: 1.6; margin-bottom: 32px; max-width: 420px; }
+
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--saffron); color: #fff;
+    font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700;
+    padding: 14px 28px; border-radius: var(--radius-sm); border: none; cursor: pointer;
+    transition: transform .15s, background .15s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .btn-primary:hover { background: var(--saffron-dark); transform: translateY(-1px); }
+  .btn-ghost {
+    background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.80);
+    font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 600;
+    padding: 14px 28px; border-radius: var(--radius-sm); border: 1px solid rgba(255,255,255,0.15); cursor: pointer;
+    transition: background .15s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.14); }
+
+  .hero-stats {
+    display: flex; gap: 28px; margin-top: 40px;
+    border-top: 1px solid rgba(255,255,255,0.10); padding-top: 32px;
+  }
+  .stat-num { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: #fff; }
+  .stat-lbl { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 2px; text-transform: uppercase; letter-spacing: .5px; }
+
+  .hero-visual {
+    display: flex; flex-direction: column; gap: 12px;
+    background: rgba(255,255,255,0.05); border-radius: var(--radius); padding: 24px;
+    border: 1px solid rgba(255,255,255,0.10);
+  }
+  .order-card {
+    background: rgba(255,255,255,0.09); border-radius: var(--radius-sm);
+    padding: 14px 16px; display: flex; align-items: center; gap: 12px;
+    animation: slideIn .5s ease forwards; opacity: 0;
+  }
+  .order-card:nth-child(1) { animation-delay: .1s; }
+  .order-card:nth-child(2) { animation-delay: .3s; }
+  .order-card:nth-child(3) { animation-delay: .5s; }
+  @keyframes slideIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+
+  .order-icon { font-size: 28px; }
+  .order-name { font-size: 14px; font-weight: 600; color: #fff; }
+  .order-sub { font-size: 12px; color: rgba(255,255,255,0.45); }
+  .order-status {
+    margin-left: auto; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px;
+  }
+  .status-live { background: rgba(74,222,128,0.18); color: #4ade80; }
+  .status-otw { background: rgba(255,107,26,0.18); color: var(--saffron); }
+  .status-prep { background: rgba(250,204,21,0.18); color: #facc15; }
+
+  .timer-bar {
+    background: rgba(255,255,255,0.05); border-radius: var(--radius-sm);
+    padding: 14px 16px; display: flex; align-items: center; gap: 12px;
+  }
+  .timer-ring {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: conic-gradient(var(--saffron) 75%, rgba(255,255,255,0.1) 0);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: #fff;
+    flex-shrink: 0;
+  }
+  .timer-text { font-size: 13px; color: rgba(255,255,255,0.70); }
+  .timer-text strong { color: #fff; font-weight: 600; }
+
+  /* CATEGORIES */
+  .section { padding: 56px 5vw; }
+  .section-title { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; }
+  .section-sub { font-size: 15px; color: var(--ink-soft); margin-bottom: 32px; }
+
+  .cat-row { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
+  .cat-row::-webkit-scrollbar { display: none; }
+  .cat-pill {
+    flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 8px;
+    background: var(--white); border: 2px solid transparent;
+    border-radius: var(--radius); padding: 18px 20px; cursor: pointer;
+    transition: all .18s; min-width: 90px;
+  }
+  .cat-pill:hover, .cat-pill.active { border-color: var(--saffron); background: var(--saffron-light); }
+  .cat-pill .cat-emoji { font-size: 30px; }
+  .cat-pill .cat-name { font-size: 12px; font-weight: 600; color: var(--ink-mid); }
+
+  /* MENU GRID */
+  .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+  .menu-card {
+    background: var(--white); border-radius: var(--radius);
+    border: 1px solid var(--border); overflow: hidden;
+    transition: transform .18s, box-shadow .18s;
+    cursor: pointer;
+  }
+  .menu-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(26,18,11,0.10); }
+
+  .menu-img {
+    height: 150px; display: flex; align-items: center; justify-content: center;
+    font-size: 64px; background: var(--cream);
+    position: relative;
+  }
+  .veg-dot {
+    position: absolute; top: 10px; left: 10px;
+    width: 18px; height: 18px; border-radius: 2px; border: 1.5px solid;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 8px;
+  }
+  .veg { border-color: #16a34a; background: #f0fdf4; }
+  .veg::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #16a34a; }
+  .nonveg { border-color: #dc2626; background: #fef2f2; }
+  .nonveg::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #dc2626; }
+
+  .spice-row { position: absolute; top: 10px; right: 10px; display: flex; gap: 2px; }
+  .chilli { font-size: 10px; opacity: 0.7; }
+  .chilli.hot { opacity: 1; }
+
+  .menu-body { padding: 14px 16px; }
+  .menu-name { font-size: 15px; font-weight: 600; margin-bottom: 4px; color: var(--ink); }
+  .menu-desc { font-size: 12px; color: var(--ink-soft); margin-bottom: 12px; line-height: 1.5; }
+  .menu-footer { display: flex; align-items: center; justify-content: space-between; }
+  .menu-price { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: var(--saffron); }
+  .menu-price span { font-size: 12px; font-weight: 400; color: var(--ink-soft); }
+
+  .add-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--saffron); color: #fff; border: none;
+    font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: transform .15s, background .15s;
+    font-weight: 300; line-height: 1;
+  }
+  .add-btn:hover { background: var(--saffron-dark); transform: scale(1.1); }
+  .qty-ctrl { display: flex; align-items: center; gap: 8px; }
+  .qty-ctrl button {
+    width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--saffron);
+    background: transparent; color: var(--saffron); font-size: 16px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; font-weight: 600;
+    transition: all .12s;
+  }
+  .qty-ctrl button:hover { background: var(--saffron); color: #fff; }
+  .qty-num { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; min-width: 20px; text-align: center; }
+
+  /* CART DRAWER */
+  .cart-overlay {
+    position: fixed; inset: 0; background: rgba(26,18,11,0.50); z-index: 200;
+    opacity: 0; pointer-events: none; transition: opacity .25s;
+  }
+  .cart-overlay.open { opacity: 1; pointer-events: all; }
+  .cart-drawer {
+    position: fixed; right: 0; top: 0; bottom: 0; width: min(420px, 100vw);
+    background: var(--white); z-index: 201; padding: 28px;
+    transform: translateX(100%); transition: transform .3s cubic-bezier(.25,.8,.25,1);
+    display: flex; flex-direction: column; overflow-y: auto;
+  }
+  .cart-drawer.open { transform: none; }
+  .cart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+  .cart-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; }
+  .close-btn { background: var(--cream); border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+
+  .cart-item { display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border); align-items: center; }
+  .cart-item-emoji { font-size: 28px; }
+  .cart-item-name { font-size: 14px; font-weight: 600; }
+  .cart-item-price { font-size: 13px; color: var(--ink-soft); margin-top: 2px; }
+  .cart-item-ctrl { margin-left: auto; }
+
+  .cart-total {
+    margin-top: 20px; padding: 16px; background: var(--cream); border-radius: var(--radius-sm);
+  }
+  .total-row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; color: var(--ink-soft); }
+  .total-row.grand { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: var(--ink); margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+
+  .whatsapp-btn {
+    margin-top: 20px;
+    background: #25D366; color: #fff;
+    font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700;
+    padding: 16px 20px; border-radius: var(--radius-sm); border: none; cursor: pointer;
+    width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
+    transition: background .15s, transform .15s;
+  }
+  .whatsapp-btn:hover { background: #1ebe5d; transform: translateY(-1px); }
+  .whatsapp-icon { width: 22px; height: 22px; }
+
+  .cod-badge {
+    margin-top: 12px; text-align: center; font-size: 12px; color: var(--ink-soft);
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+
+  /* FAB CART */
+  .cart-fab {
+    position: fixed; bottom: 28px; right: 28px; z-index: 150;
+    background: var(--saffron); color: #fff;
+    font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700;
+    padding: 14px 22px; border-radius: 40px; border: none; cursor: pointer;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 8px 24px rgba(255,107,26,0.35);
+    transition: transform .15s, opacity .2s;
+    opacity: 0; pointer-events: none;
+  }
+  .cart-fab.visible { opacity: 1; pointer-events: all; }
+  .cart-fab:hover { transform: translateY(-2px); }
+  .cart-badge { background: #fff; color: var(--saffron); font-size: 12px; font-weight: 800; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+  /* HOW IT WORKS */
+  .how-section { background: var(--ink); padding: 64px 5vw; }
+  .how-section .section-title { color: #fff; }
+  .how-section .section-sub { color: rgba(255,255,255,0.50); }
+  .steps-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+  .step-card {
+    background: rgba(255,255,255,0.06); border-radius: var(--radius);
+    border: 1px solid rgba(255,255,255,0.08); padding: 24px;
+  }
+  .step-num { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; color: var(--saffron); margin-bottom: 12px; }
+  .step-name { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+  .step-desc { font-size: 13px; color: rgba(255,255,255,0.50); line-height: 1.6; }
+
+  /* FOOTER */
+  footer {
+    background: var(--ink); border-top: 1px solid rgba(255,255,255,0.08);
+    padding: 28px 5vw; display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+  }
+  footer .brand { font-size: 18px; }
+  footer p { font-size: 12px; color: rgba(255,255,255,0.35); }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(12px);
+    background: var(--ink); color: #fff; font-size: 14px; font-weight: 500;
+    padding: 12px 20px; border-radius: 40px; z-index: 400;
+    opacity: 0; transition: all .3s; white-space: nowrap; pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 700px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-visual { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="brand">Quick<span>Bite</span> 🍕</div>
+  <div class="nav-badge">
+    <span class="pulse"></span>
+    Delivering now · 20 min
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <div class="hero-tag">🔥 Hot & Fresh · Baihata Chariali</div>
+    <h1>Food at your door in <em>20 minutes</em>.</h1>
+    <p>Pizzas, burgers, momos, rolls — everything you crave, made fresh and delivered fast. Order on WhatsApp, pay cash on delivery.</p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="document.querySelector('.menu-section').scrollIntoView({behavior:'smooth'})">
+        🍔 Order Now
+      </button>
+      <button class="btn-ghost" onclick="window.open('https://wa.me/919876543210?text=Hi!%20I%20want%20to%20order%20food','_blank')">
+        <svg class="whatsapp-icon" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.12.554 4.108 1.523 5.836L.054 23.5l5.826-1.47A11.952 11.952 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.853 0-3.58-.504-5.065-1.382l-.363-.215-3.457.873.902-3.366-.236-.379A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+        Order on WhatsApp
+      </button>
+    </div>
+    <div class="hero-stats">
+      <div><div class="stat-num">20'</div><div class="stat-lbl">Avg delivery</div></div>
+      <div><div class="stat-num">30+</div><div class="stat-lbl">Menu items</div></div>
+      <div><div class="stat-num">₹0</div><div class="stat-lbl">Delivery fee</div></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="order-card">
+      <div class="order-icon">🍕</div>
+      <div><div class="order-name">Paneer Tikka Pizza</div><div class="order-sub">Ordered 4 min ago</div></div>
+      <span class="order-status status-prep">Preparing</span>
+    </div>
+    <div class="order-card">
+      <div class="order-icon">🍔</div>
+      <div><div class="order-name">Masala Aloo Burger</div><div class="order-sub">Ordered 11 min ago</div></div>
+      <span class="order-status status-otw">On the way</span>
+    </div>
+    <div class="order-card">
+      <div class="order-icon">🥟</div>
+      <div><div class="order-name">Veg Momos (x2)</div><div class="order-sub">Ordered 19 min ago</div></div>
+      <span class="order-status status-live">Delivered ✓</span>
+    </div>
+    <div class="timer-bar">
+      <div class="timer-ring">15m</div>
+      <div class="timer-text">Your order arrives in <strong>~15 minutes</strong></div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU SECTION -->
+<section class="section menu-section">
+  <div class="section-title">What are you craving?</div>
+  <div class="section-sub">Fresh, made-to-order · Cash on delivery</div>
+
+  <!-- Category filter -->
+  <div class="cat-row" id="catRow">
+    <div class="cat-pill active" onclick="filterCat('all', this)">
+      <span class="cat-emoji">🍽️</span><span class="cat-name">All</span>
+    </div>
+    <div class="cat-pill" onclick="filterCat('pizza', this)">
+      <span class="cat-emoji">🍕</span><span class="cat-name">Pizza</span>
+    </div>
+    <div class="cat-pill" onclick="filterCat('burger', this)">
+      <span class="cat-emoji">🍔</span><span class="cat-name">Burgers</span>
+    </div>
+    <div class="cat-pill" onclick="filterCat('momos', this)">
+      <span class="cat-emoji">🥟</span><span class="cat-name">Momos</span>
+    </div>
+    <div class="cat-pill" onclick="filterCat('rolls', this)">
+      <span class="cat-emoji">🌯</span><span class="cat-name">Rolls</span>
+    </div>
+    <div class="cat-pill" onclick="filterCat('sides', this)">
+      <span class="cat-emoji">🍟</span><span class="cat-name">Sides</span>
+    </div>
+  </div>
+
+  <div class="menu-grid" id="menuGrid"></div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section">
+  <div class="section-title">Order in 3 steps</div>
+  <div class="section-sub">Simple as a WhatsApp message</div>
+  <div class="steps-row">
+    <div class="step-card">
+      <div class="step-num">01</div>
+      <div class="step-name">Browse & Add</div>
+      <div class="step-desc">Pick items from the menu and add to cart. Or simply WhatsApp us your order.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">02</div>
+      <div class="step-name">Confirm Order</div>
+      <div class="step-desc">Share your address. You'll get an instant WhatsApp confirmation from us.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">03</div>
+      <div class="step-name">Pay on Delivery</div>
+      <div class="step-desc">Cash only for now. UPI coming soon. Zero extra charges.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">20'</div>
+      <div class="step-name">Hot at the Door</div>
+      <div class="step-desc">We guarantee delivery within 20 minutes in our delivery zones.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="brand">Quick<span>Bite</span> 🍕</div>
+  <p>Baihata Chariali · Raniga · Assam &nbsp;|&nbsp; WhatsApp: +91 98765 43210</p>
+</footer>
+
+<!-- CART FAB -->
+<button class="cart-fab" id="cartFab" onclick="openCart()">
+  🛒 View Cart — <span class="cart-badge" id="cartCount">0</span>
+</button>
+
+<!-- CART OVERLAY + DRAWER -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-header">
+    <div class="cart-title">Your Order 🧾</div>
+    <button class="close-btn" onclick="closeCart()">✕</button>
+  </div>
+  <div id="cartItems"></div>
+  <div class="cart-total" id="cartTotal" style="display:none">
+    <div class="total-row"><span>Subtotal</span><span id="subtotal">₹0</span></div>
+    <div class="total-row"><span>Delivery</span><span style="color:#16a34a;font-weight:600">Free</span></div>
+    <div class="total-row grand"><span>Total</span><span id="grandTotal">₹0</span></div>
+  </div>
+  <button class="whatsapp-btn" id="waBtn" onclick="orderOnWhatsapp()" style="display:none">
+    <svg class="whatsapp-icon" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.12.554 4.108 1.523 5.836L.054 23.5l5.826-1.47A11.952 11.952 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.853 0-3.58-.504-5.065-1.382l-.363-.215-3.457.873.902-3.366-.236-.379A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+    Order via WhatsApp (Cash on Delivery)
+  </button>
+  <div class="cod-badge" id="codBadge" style="display:none">
+    🔒 Cash on delivery · No online payment needed
+  </div>
+  <div id="emptyCart" style="text-align:center;padding:40px 0;color:var(--ink-soft)">
+    <div style="font-size:48px;margin-bottom:12px">🛒</div>
+    <div style="font-size:15px;font-weight:500">Your cart is empty</div>
+    <div style="font-size:13px;margin-top:6px">Add some delicious food!</div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const MENU = [
+  // PIZZA
+  { id:1, cat:'pizza', emoji:'🍕', name:'Paneer Tikka Pizza', desc:'Tandoori paneer, capsicum, onions, masala base', price:149, veg:true, spice:2 },
+  { id:2, cat:'pizza', emoji:'🍕', name:'Corn & Cheese Pizza', desc:'Sweet corn, extra mozzarella, white sauce', price:129, veg:true, spice:0 },
+  { id:3, cat:'pizza', emoji:'🍕', name:'Chicken BBQ Pizza', desc:'Grilled chicken tikka, BBQ sauce, onions', price:179, veg:false, spice:2 },
+  { id:4, cat:'pizza', emoji:'🍕', name:'Mushroom Delight', desc:'Button mushrooms, oregano, mozzarella', price:139, veg:true, spice:1 },
+  // BURGERS
+  { id:5, cat:'burger', emoji:'🍔', name:'Masala Aloo Burger', desc:'Spiced potato patty, mint chutney, lettuce', price:79, veg:true, spice:2 },
+  { id:6, cat:'burger', emoji:'🍔', name:'Paneer Tikka Burger', desc:'Grilled paneer, onion rings, mayo', price:99, veg:true, spice:2 },
+  { id:7, cat:'burger', emoji:'🍔', name:'Chicken Zinger', desc:'Crispy chicken fillet, coleslaw, spicy sauce', price:119, veg:false, spice:3 },
+  { id:8, cat:'burger', emoji:'🍔', name:'Veg Supreme', desc:'Double patty, extra cheese, veggies', price:109, veg:true, spice:1 },
+  // MOMOS
+  { id:9, cat:'momos', emoji:'🥟', name:'Steamed Veg Momos (6 pcs)', desc:'Classic veg filling, ginger-garlic, schezwan dip', price:69, veg:true, spice:1 },
+  { id:10, cat:'momos', emoji:'🥟', name:'Fried Veg Momos (6 pcs)', desc:'Crispy fried, tangy dip', price:79, veg:true, spice:1 },
+  { id:11, cat:'momos', emoji:'🥟', name:'Chicken Momos (6 pcs)', desc:'Juicy chicken filling, spicy red chutney', price:89, veg:false, spice:2 },
+  { id:12, cat:'momos', emoji:'🥟', name:'Paneer Momos (6 pcs)', desc:'Cottage cheese, herbs, mint dip', price:79, veg:true, spice:1 },
+  // ROLLS
+  { id:13, cat:'rolls', emoji:'🌯', name:'Egg Roll', desc:'Rumali roti, fried egg, onions, green chutney', price:59, veg:false, spice:2 },
+  { id:14, cat:'rolls', emoji:'🌯', name:'Paneer Roll', desc:'Tandoori paneer, onions, chilli sauce', price:79, veg:true, spice:2 },
+  { id:15, cat:'rolls', emoji:'🌯', name:'Chicken Tikka Roll', desc:'Grilled chicken, mint mayo, crispy onions', price:99, veg:false, spice:2 },
+  { id:16, cat:'rolls', emoji:'🌯', name:'Aloo Frankie', desc:'Spiced potato, tamarind, masala roti', price:55, veg:true, spice:3 },
+  // SIDES
+  { id:17, cat:'sides', emoji:'🍟', name:'Masala Fries', desc:'Crispy fries, chaat masala, ketchup', price:59, veg:true, spice:1 },
+  { id:18, cat:'sides', emoji:'🍟', name:'Peri Peri Fries', desc:'Loaded with peri peri seasoning', price:69, veg:true, spice:3 },
+  { id:19, cat:'sides', emoji:'🥤', name:'Cold Drink (Pepsi/7Up)', desc:'330ml can, chilled', price:30, veg:true, spice:0 },
+  { id:20, cat:'sides', emoji:'🧃', name:'Nimbu Pani', desc:'Fresh lemon, rock salt, mint — homemade', price:25, veg:true, spice:0 },
+];
+
+let cart = {};
+let currentCat = 'all';
+
+function renderMenu(cat) {
+  const grid = document.getElementById('menuGrid');
+  const items = cat === 'all' ? MENU : MENU.filter(i => i.cat === cat);
+  grid.innerHTML = items.map(item => {
+    const qty = cart[item.id] || 0;
+    const chillies = '🌶️'.repeat(item.spice) || '';
+    return `
+      <div class="menu-card" id="card-${item.id}">
+        <div class="menu-img">
+          <div class="veg-dot ${item.veg ? 'veg' : 'nonveg'}"></div>
+          <div class="spice-row">${[...Array(item.spice)].map((_,i) => `<span class="chilli hot">🌶</span>`).join('')}</div>
+          <span>${item.emoji}</span>
+        </div>
+        <div class="menu-body">
+          <div class="menu-name">${item.name}</div>
+          <div class="menu-desc">${item.desc}</div>
+          <div class="menu-footer">
+            <div class="menu-price">₹${item.price} <span>/item</span></div>
+            <div id="ctrl-${item.id}">${qty === 0
+              ? `<button class="add-btn" onclick="addToCart(${item.id})">+</button>`
+              : `<div class="qty-ctrl"><button onclick="decCart(${item.id})">−</button><span class="qty-num">${qty}</span><button onclick="incCart(${item.id})">+</button></div>`
+            }</div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function filterCat(cat, el) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  renderMenu(cat);
+}
+
+function addToCart(id) {
+  cart[id] = 1;
+  updateCtrl(id);
+  updateFab();
+  showToast('Added to cart 🛒');
+}
+function incCart(id) { cart[id] = (cart[id] || 0) + 1; updateCtrl(id); updateFab(); }
+function decCart(id) {
+  cart[id] = (cart[id] || 0) - 1;
+  if (cart[id] <= 0) delete cart[id];
+  updateCtrl(id); updateFab();
+}
+
+function updateCtrl(id) {
+  const el = document.getElementById(`ctrl-${id}`);
+  if (!el) return;
+  const qty = cart[id] || 0;
+  el.innerHTML = qty === 0
+    ? `<button class="add-btn" onclick="addToCart(${id})">+</button>`
+    : `<div class="qty-ctrl"><button onclick="decCart(${id})">−</button><span class="qty-num">${qty}</span><button onclick="incCart(${id})">+</button></div>`;
+}
+
+function updateFab() {
+  const total = Object.keys(cart).length;
+  const fab = document.getElementById('cartFab');
+  document.getElementById('cartCount').textContent = total;
+  fab.classList.toggle('visible', total > 0);
+}
+
+function openCart() {
+  document.getElementById('cartOverlay').classList.add('open');
+  document.getElementById('cartDrawer').classList.add('open');
+  renderCart();
+}
+function closeCart() {
+  document.getElementById('cartOverlay').classList.remove('open');
+  document.getElementById('cartDrawer').classList.remove('open');
+}
+
+function renderCart() {
+  const itemsEl = document.getElementById('cartItems');
+  const totalEl = document.getElementById('cartTotal');
+  const waBtn = document.getElementById('waBtn');
+  const codBadge = document.getElementById('codBadge');
+  const empty = document.getElementById('emptyCart');
+  const keys = Object.keys(cart);
+
+  if (keys.length === 0) {
+    itemsEl.innerHTML = '';
+    totalEl.style.display = 'none';
+    waBtn.style.display = 'none';
+    codBadge.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  let subtotal = 0;
+  itemsEl.innerHTML = keys.map(id => {
+    const item = MENU.find(m => m.id == id);
+    const qty = cart[id];
+    subtotal += item.price * qty;
+    return `
+      <div class="cart-item">
+        <div class="cart-item-emoji">${item.emoji}</div>
+        <div>
+          <div class="cart-item-name">${item.name}</div>
+          <div class="cart-item-price">₹${item.price} × ${qty} = ₹${item.price * qty}</div>
+        </div>
+        <div class="cart-item-ctrl">
+          <div class="qty-ctrl">
+            <button onclick="decCart(${id});renderCart()">−</button>
+            <span class="qty-num">${qty}</span>
+            <button onclick="incCart(${id});renderCart()">+</button>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+
+  document.getElementById('subtotal').textContent = '₹' + subtotal;
+  document.getElementById('grandTotal').textContent = '₹' + subtotal;
+  totalEl.style.display = 'block';
+  waBtn.style.display = 'flex';
+  codBadge.style.display = 'flex';
+}
+
+function orderOnWhatsapp() {
+  const lines = Object.keys(cart).map(id => {
+    const item = MENU.find(m => m.id == id);
+    return `• ${item.name} × ${cart[id]} — ₹${item.price * cart[id]}`;
+  });
+  const total = Object.keys(cart).reduce((s, id) => {
+    const item = MENU.find(m => m.id == id);
+    return s + item.price * cart[id];
+  }, 0);
+  const msg = `Hi! I'd like to place an order from QuickBite:\n\n${lines.join('\n')}\n\n*Total: ₹${total}*\n\nPayment: Cash on Delivery\n\nMy address: `;
+  window.open(`https://wa.me/919876543210?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+renderMenu('all');
+</script>
+</body>
+</html>
